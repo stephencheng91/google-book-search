@@ -7,7 +7,7 @@ function Navbar() {
             <nav>
                 <div className="navbar navbar-expand-lg navbar-light bg-light">
                     <div className="navbar-brand">
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <div className="container">
                                 <Link to="/">Google Search</Link>
                             </div>

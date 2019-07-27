@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const mongoose = require("mongoose");
 const db = require("./models");
+const axios = require("axios");
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
@@ -43,13 +44,46 @@ app.post("/api/books", function(req, res){
 
 });
 
+app.get("/api/googlebooks/:title",function(req,res){
+  console.log("server googlebooks", req.params)
+ // const { query: params } = req;
+   let title = req.params.title;
+   let query = `https://www.googleapis.com/books/v1/volumes?q=${title}`
+   console.log(query)
+    axios
+      .get(query)
+      // .then(results =>{
+      //   // 
+      //   results.data.items.filter(
+      //     result =>
+      //       // result.volumeInfo.title &&
+      //       // result.volumeInfo.infoLink &&
+      //       // result.volumeInfo.authors &&
+      //       // result.volumeInfo.description &&
+      //       // result.volumeInfo.imageLinks &&
+      //       // result.volumeInfo.imageLinks.thumbnail
+      //       console.log("titles:", result.volumeInfo.title)
+      //     )
+      //     //console.log(results.data.items);
+      //   } )
+      // .then(apiBooks =>
+      //   db.Book.find().then(dbBooks =>
+      //     apiBooks.filter(apiBook =>
+      //       dbBooks.every(dbBook => dbBook.googleId.toString() !== apiBook.id)
+      //     )
+      //   )
+      // )
+      .then(books => {
+        console.log(books.data); 
+        res.json(books.data)
+      })
+    //  .catch(err => res.status(422).json(err));
+
+})
+
 
 // Send every other request to the React app
 // Define any API routes before this runs
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
-
 app.listen(PORT, () => {
   console.log(`🌎 ==> API server now on port ${PORT}!`);
 });
