@@ -32,8 +32,9 @@ app.get("/api/books", function(req, res){
 })
 
 // Posting 
-app.post("/api/books", function(req, res){
+app.post("/api/books/", function(req, res){
   console.log("req.body: ", req.body);
+
   db.Book.create(req.body)
   .then(function(dbBook){
     console.log(dbBook);
@@ -44,6 +45,31 @@ app.post("/api/books", function(req, res){
 
 });
 
+app.get("/api/booksaved/", function(req, res){
+  // console.log("server book get saved" )
+  db.Book.find()
+  .then(function(dbBook){
+    // console.log(dbBook)
+     res.json(dbBook);
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+
+});
+
+app.delete("/api/books/", function(req, res){
+  // console.log("req.body: ", req.body);
+  db.Book.remove(req.body)
+  .then(function(dbBook){
+    // console.log(dbBook)
+     res.json(dbBook);
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+})
+
 app.get("/api/googlebooks/:title",function(req,res){
   console.log("server googlebooks", req.params)
  // const { query: params } = req;
@@ -52,27 +78,6 @@ app.get("/api/googlebooks/:title",function(req,res){
    console.log(query)
     axios
       .get(query)
-      // .then(results =>{
-      //   // 
-      //   results.data.items.filter(
-      //     result =>
-      //       // result.volumeInfo.title &&
-      //       // result.volumeInfo.infoLink &&
-      //       // result.volumeInfo.authors &&
-      //       // result.volumeInfo.description &&
-      //       // result.volumeInfo.imageLinks &&
-      //       // result.volumeInfo.imageLinks.thumbnail
-      //       console.log("titles:", result.volumeInfo.title)
-      //     )
-      //     //console.log(results.data.items);
-      //   } )
-      // .then(apiBooks =>
-      //   db.Book.find().then(dbBooks =>
-      //     apiBooks.filter(apiBook =>
-      //       dbBooks.every(dbBook => dbBook.googleId.toString() !== apiBook.id)
-      //     )
-      //   )
-      // )
       .then(books => {
         console.log(books.data); 
         res.json(books.data)

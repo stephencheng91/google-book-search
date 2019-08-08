@@ -19,7 +19,7 @@ function Navbar() {
                                 </li>
                                 <li className="nav-item active">
                                     <div className="container">
-                                        <Link to="/saved">Saved</Link>
+                                        <Link to="/saved">Favorite</Link>
                                     </div>
                                 </li>
                             </ul>

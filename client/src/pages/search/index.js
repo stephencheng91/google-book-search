@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import API from "../../utils/API";
 import Wrapper from "../../components/Wrapper";
+import "./style.css";
 
 class Search extends Component {
 
@@ -11,7 +12,8 @@ class Search extends Component {
         description: "",
         image: "",
         link: "",
-        books: []
+        books: [],
+        saveButton: false
 
     }
 
@@ -25,42 +27,44 @@ class Search extends Component {
         const { name, value } = event.target
         // console.log("input value: ", value)
         this.setState({
-            title: value
+            [name]: value
         })
 
     }
     search = () => {
         // console.log("search", this.state.title)
         API.getgoogle(this.state.title).then(res => {
-            // console.log(res.data.items)
+            console.log(res.data.items)
             let googleBook = res.data.items;
-            let booksArry = [];
+            let booksObj = {};
             let booksfromgoogle = [];
 
-            // console.log(googleBook);
-            // for loop res.data.items
-            //get the info you need
-            // push object to the booksfromgoole array
             for (var i = 0; i < 5; i++) {
-                booksArry[i] = [
+                booksObj =
                     {
+                        id: googleBook[i].id,
                         title: googleBook[i].volumeInfo.title,
                         author: googleBook[i].volumeInfo.authors,
                         description: googleBook[i].volumeInfo.description,
-                        image: googleBook[i].volumeInfo.imageLinks,
-                        link: googleBook[i].volumeInfo.infoLink
+                        image: googleBook[i].volumeInfo.imageLinks.smallThumbnail,
+                        link: googleBook[i].volumeInfo.infoLink,
+                        saveButton: false
                     }
-                ];
-                booksfromgoogle.push(booksArry[i]);
-            };
-            // console.log(booksfromgoogle);
 
-            this.setState = {
+                booksfromgoogle.push(booksObj);
+            };
+
+            this.setState({
                 books: booksfromgoogle
 
-            }
+            })
         })
-        // call the api // get the reseponse // change the state to render the books
+    }
+
+    saved = (id) => {
+        let book = this.state.books.filter(book => book.id === id)
+        console.log(book[0])
+        API.saveBook(book[0])
 
     }
 
@@ -71,32 +75,36 @@ class Search extends Component {
                     <br></br>
                     <h2>Search for books</h2>
                     <div className="form-group">
-                        <input className="form-control" type="text" placeholder="Enter Book" onChange={this.getInput} ></input>
+                        <input className="form-control" type="text" placeholder="Enter Book" name="title" onChange={this.getInput} ></input>
                         <br></br>
                         <button type="submit" className="btn btn-primary mb-2" onClick={this.search}>Start Search</button>
                     </div>
                 </div>
 
                 <div className="container">
-                    <ul>
+                    <ul className="list-group">
                         {this.state.books.map(book => (
-                            <li>
-                                {book.title}
+                            <li className="list-group-item">
+                                <div className="row">
+                                    <div className="col-2">
+                                        <img className="image" src={book.image}></img>
+                                    </div>
+                                    <div className="col-10">
+                                        <strong>Title:</strong> {book.title} <br />
+                                        <strong>Author: </strong> {book.author} <br />
+                                        <strong>Description: </strong> {book.description} <br />
+                                        <strong>Link:</strong> <a href={book.link} target="blank">{book.link}</a> <br />
+                                        <button className="btn btn-primary" onClick={()=>this.saved(book.id)}>Add to Favorite</button>
+                                    </div>
+
+                                </div>
+
                             </li>
                         ))}
                     </ul>
                 </div>
 
             </Wrapper>
-            // <div>
-            /* {/* //  // render list of books 
-                // this.state.books.map(books => { */
-            // ul /li 
-            //title: books.title
-            // add button to save it then call a function then you update the db
-
-            //  })
-            // </div> */}
 
         )
     }
