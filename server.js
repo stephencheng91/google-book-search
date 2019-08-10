@@ -58,8 +58,8 @@ app.get("/api/booksaved/", function(req, res){
 
 });
 
-app.delete("/api/books/", function(req, res){
-  // console.log("req.body: ", req.body);
+app.delete("/api/books", function(req, res){
+  console.log("req.body: ", req.body);
   db.Book.remove(req.body)
   .then(function(dbBook){
     // console.log(dbBook)
